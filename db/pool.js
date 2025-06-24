@@ -1,7 +1,7 @@
 import { Pool } from "pg";
 import process from "node:process";
 
-module.exports = new Pool({
+export default new Pool({
   host: process.env.host,
   user: process.env.user,
   database: process.env.database,
