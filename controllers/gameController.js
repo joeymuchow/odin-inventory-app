@@ -3,8 +3,12 @@ import { getAllGames } from "../db/gameQueries.js";
 async function getGames(req, res) {
   const games = await getAllGames();
 
-  console.log(games);
-  res.send(games);
+  res.render("viewList",
+    {
+      title: "Games",
+      items: games
+    }
+  );
 }
 
 export { getGames };

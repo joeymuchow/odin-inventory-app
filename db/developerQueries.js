@@ -5,4 +5,13 @@ async function getAllDevelopers() {
   return rows;
 }
 
-export { getAllDevelopers };
+async function insertDeveloper(name) {
+  await pool.query("INSERT INTO developers (name) VALUES ($1)", [name]);
+}
+
+// async function getSingleDeveloper(id) {
+//   const { rows } = await pool.query("SELECT * FROM developers WHERE id = $1", [id]);
+//   return rows;
+// }
+
+export { getAllDevelopers, insertDeveloper };

@@ -1,8 +1,10 @@
 import { Router } from "express";
-import { getDevelopers } from "../controllers/developerController.js";
+import { getDevelopers, newDeveloperGet, newDeveloperPost } from "../controllers/developerController.js";
 
 const developerRouter = Router();
 
 developerRouter.get("/", getDevelopers);
+developerRouter.get("/new", newDeveloperGet);
+developerRouter.post("/new", newDeveloperPost);
 
 export default developerRouter;
