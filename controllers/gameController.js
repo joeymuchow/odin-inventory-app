@@ -6,6 +6,7 @@ async function getGames(req, res) {
   res.render("viewList",
     {
       title: "Games",
+      category: "games",
       items: games
     }
   );
