@@ -29,7 +29,6 @@ async function newDeveloperPost(req, res) {
 
 function updateDeveloperGet(req, res) {
   const { name, id } = req.query;
-  console.log(name, id);
   res.render("updateItem", {
     title: "Update Developer",
     value: name,

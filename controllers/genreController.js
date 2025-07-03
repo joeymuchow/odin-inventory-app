@@ -25,7 +25,6 @@ async function newGenrePost(req, res) {
 
 function updateGenreGet(req, res) {
   const { name, id } = req.query;
-  console.log(name, id);
   res.render("updateItem", {
     title: "Update Genre",
     value: name,

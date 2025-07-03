@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="../css/newGame.css">
+</head>
+<body>
+  <h1><%= title %></h1>
+  <form action="<%= url %>" method="post">
+    <div>
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" required>
+    </div>
+    <div>
+      <label for="developer">Developer</label>
+      <select name="developer" id="developer" required>
+        <% for (let i = 0; i < developers.length; i++) { %>
+          <option value="<%= developers[i].name %>"><%= developers[i].name %></option>
+        <% } %>
+      </select>
+    </div>
+    <div>
+      <label for="genres">Genres</label>
+      <div id="genres">
+        <% for (let i = 0; i < genres.length; i++) { %>
+          <div class="genre-item">
+            <input value="<%= genres[i].name %>" type="checkbox" id="genre-<%= i %>">
+            <label for="genre-<%= i %>"><%= genres[i].name %></label>
+          </div>
+        <% } %>
+      </div>
+    </div>
+    <div>
+      <label for="platforms">Platforms</label>
+      <div id="platforms">
+        <% for (let i = 0; i < platforms.length; i++) { %>
+          <div class="platform-item">
+            <input value="<%= platforms[i].name %>" type="checkbox" id="platforms-<%= i %>">
+            <label for="platforms-<%= i %>"><%= platforms[i].name %></label>
+          </div>
+        <% } %>
+      </div>
+    </div>
+    <div><button type="submit">Submit</button></div>
+  </form>
+</body>
+</html>

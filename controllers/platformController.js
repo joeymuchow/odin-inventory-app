@@ -29,7 +29,6 @@ async function newPlatformPost(req, res) {
 
 function updatePlatformGet(req, res) {
   const { name, id } = req.query;
-  console.log(name, id);
   res.render("updateItem", {
     title: "Update Platform",
     value: name,

@@ -33,7 +33,6 @@ app.use("/genres", genreRouter);
 app.use("/platforms", platformRouter);
 
 app.use("/", (req, res) => {
-  console.log(req);
   res.send("Not found");
 });
 
