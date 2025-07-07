@@ -26,7 +26,7 @@
       <div id="genres">
         <% for (let i = 0; i < genres.length; i++) { %>
           <div class="genre-item">
-            <input value="<%= genres[i].name %>" type="checkbox" id="genre-<%= i %>">
+            <input name="genres" value="<%= genres[i].name %>" type="checkbox" id="genre-<%= i %>">
             <label for="genre-<%= i %>"><%= genres[i].name %></label>
           </div>
         <% } %>
@@ -37,7 +37,7 @@
       <div id="platforms">
         <% for (let i = 0; i < platforms.length; i++) { %>
           <div class="platform-item">
-            <input value="<%= platforms[i].name %>" type="checkbox" id="platforms-<%= i %>">
+            <input name="platforms" value="<%= platforms[i].name %>" type="checkbox" id="platforms-<%= i %>">
             <label for="platforms-<%= i %>"><%= platforms[i].name %></label>
           </div>
         <% } %>
