@@ -79,6 +79,7 @@ async function updateGameGet(req, res) {
   const currentPlatforms = await getGamePlatforms(game[0].id);
   const allPlatforms = await getAllPlatforms();
 
+  // find the genres the game has and set them to be checked on the form
   const idsInCurrentGenres = new Set(currentGenres.map((gameGenres) => gameGenres.genre_id));
   const genres = allGenres.map((genre) => {
     if (idsInCurrentGenres.has(genre.id)) {
@@ -87,6 +88,7 @@ async function updateGameGet(req, res) {
     return genre;
   });
 
+  // find the platforms the game has and set them to be checked on the form
   const idsInCurrentPlatforms = new Set(currentPlatforms.map((gamePlatforms) => gamePlatforms.platform_id));
   const platforms = allPlatforms.map((platform) => {
     if (idsInCurrentPlatforms.has(platform.id)) {
@@ -105,5 +107,10 @@ async function updateGameGet(req, res) {
     platforms,
   });
 }
+
+// TODO
+// updateGamePost
+// check if anything is different from what already exists? this could be a lot of checks
+// update any changes and delete rows in games_genres or games_platforms that were unchecked
 
 export { getGames, newGameGet, newGamePost, updateGameGet };
