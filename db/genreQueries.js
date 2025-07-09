@@ -22,4 +22,9 @@ async function insertGameGenre(gameId, genreId) {
   await pool.query("INSERT INTO games_genres (game_id, genre_id) VALUES ($1, $2)", [gameId, genreId]);
 }
 
-export { getAllGenres, insertGenre, updateGenre, getSingleGenre, insertGameGenre };
+async function getGameGenres(gameId) {
+  const { rows } = await pool.query("SELECT * FROM games_genres WHERE game_id = $1", [gameId]);
+  return rows;
+}
+
+export { getAllGenres, insertGenre, updateGenre, getSingleGenre, insertGameGenre, getGameGenres };

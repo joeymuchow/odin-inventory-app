@@ -22,4 +22,9 @@ async function insertGamePlatform(gameId, platformId) {
   await pool.query("INSERT INTO games_platforms (game_id, platform_id) VALUES ($1, $2)", [gameId, platformId]);
 }
 
-export { getAllPlatforms, insertPlatform, updatePlatform, getSinglePlatform, insertGamePlatform };
+async function getGamePlatforms(gameId) {
+  const { rows } = await pool.query("SELECT * FROM games_platforms WHERE game_id = $1", [gameId]);
+  return rows;
+}
+
+export { getAllPlatforms, insertPlatform, updatePlatform, getSinglePlatform, insertGamePlatform, getGamePlatforms };
