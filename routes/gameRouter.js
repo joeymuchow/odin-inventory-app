@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getGames, newGameGet, newGamePost, updateGameGet } from "../controllers/gameController.js";
+import { getGames, newGameGet, newGamePost, updateGameGet, updateGamePut } from "../controllers/gameController.js";
 
 const gameRouter = Router();
 
@@ -10,5 +10,6 @@ gameRouter.post("/new", newGamePost);
 // TODO: update game routes
 // the update shouldn't be too crazy? maybe? although updating a games developer, genre, or platform might be interesting
 gameRouter.get("/update", updateGameGet);
+gameRouter.put("/:id/update", updateGamePut);
 
 export default gameRouter;

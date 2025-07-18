@@ -13,8 +13,13 @@ async function updatePlatform(name, id) {
   await pool.query("UPDATE platforms SET name = $1 WHERE id = $2", [name, id]);
 }
 
-async function getSinglePlatform(name) {
+async function getSinglePlatformByName(name) {
   const { rows } = await pool.query("SELECT * FROM platforms WHERE name = $1", [name]);
+  return rows;
+}
+
+async function getSinglePlatformById(id) {
+  const { rows } = await pool.query("SELECT * FROM platforms WHERE id = $1", [id]);
   return rows;
 }
 
@@ -27,4 +32,4 @@ async function getGamePlatforms(gameId) {
   return rows;
 }
 
-export { getAllPlatforms, insertPlatform, updatePlatform, getSinglePlatform, insertGamePlatform, getGamePlatforms };
+export { getAllPlatforms, insertPlatform, updatePlatform, getSinglePlatformByName, getSinglePlatformById, insertGamePlatform, getGamePlatforms };
