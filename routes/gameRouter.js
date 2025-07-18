@@ -2,6 +2,7 @@ import { Router } from "express";
 import { getGames, newGameGet, newGamePost, updateGameGet, updateGamePut } from "../controllers/gameController.js";
 
 const gameRouter = Router();
+// TODO: add middleware to validate the form submissions for /new post and /:id/update put
 
 gameRouter.get("/", getGames);
 gameRouter.get("/new", newGameGet);

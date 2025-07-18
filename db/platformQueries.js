@@ -14,22 +14,48 @@ async function updatePlatform(name, id) {
 }
 
 async function getSinglePlatformByName(name) {
-  const { rows } = await pool.query("SELECT * FROM platforms WHERE name = $1", [name]);
+  const { rows } = await pool.query("SELECT * FROM platforms WHERE name = $1", [
+    name,
+  ]);
   return rows;
 }
 
 async function getSinglePlatformById(id) {
-  const { rows } = await pool.query("SELECT * FROM platforms WHERE id = $1", [id]);
+  const { rows } = await pool.query("SELECT * FROM platforms WHERE id = $1", [
+    id,
+  ]);
   return rows;
 }
 
 async function insertGamePlatform(gameId, platformId) {
-  await pool.query("INSERT INTO games_platforms (game_id, platform_id) VALUES ($1, $2)", [gameId, platformId]);
+  await pool.query(
+    "INSERT INTO games_platforms (game_id, platform_id) VALUES ($1, $2)",
+    [gameId, platformId]
+  );
 }
 
 async function getGamePlatforms(gameId) {
-  const { rows } = await pool.query("SELECT * FROM games_platforms WHERE game_id = $1", [gameId]);
+  const { rows } = await pool.query(
+    "SELECT * FROM games_platforms WHERE game_id = $1",
+    [gameId]
+  );
   return rows;
 }
 
-export { getAllPlatforms, insertPlatform, updatePlatform, getSinglePlatformByName, getSinglePlatformById, insertGamePlatform, getGamePlatforms };
+async function deleteGamePlatforms(gameId, platformId) {
+  await pool.query(
+    "DELETE FROM games_platforms WHERE game_id = $1 AND platform_id = $2",
+    [gameId, platformId]
+  );
+}
+
+export {
+  getAllPlatforms,
+  insertPlatform,
+  updatePlatform,
+  getSinglePlatformByName,
+  getSinglePlatformById,
+  insertGamePlatform,
+  getGamePlatforms,
+  deleteGamePlatforms,
+};

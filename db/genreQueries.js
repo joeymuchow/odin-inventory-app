@@ -14,7 +14,9 @@ async function updateGenre(name, id) {
 }
 
 async function getSingleGenreByName(name) {
-  const { rows } = await pool.query("SELECT * FROM genres WHERE name = $1", [name]);
+  const { rows } = await pool.query("SELECT * FROM genres WHERE name = $1", [
+    name,
+  ]);
   return rows;
 }
 
@@ -24,12 +26,34 @@ async function getSingleGenreById(id) {
 }
 
 async function insertGameGenre(gameId, genreId) {
-  await pool.query("INSERT INTO games_genres (game_id, genre_id) VALUES ($1, $2)", [gameId, genreId]);
+  await pool.query(
+    "INSERT INTO games_genres (game_id, genre_id) VALUES ($1, $2)",
+    [gameId, genreId]
+  );
 }
 
 async function getGameGenres(gameId) {
-  const { rows } = await pool.query("SELECT * FROM games_genres WHERE game_id = $1", [gameId]);
+  const { rows } = await pool.query(
+    "SELECT * FROM games_genres WHERE game_id = $1",
+    [gameId]
+  );
   return rows;
 }
 
-export { getAllGenres, insertGenre, updateGenre, getSingleGenreByName, getSingleGenreById, insertGameGenre, getGameGenres };
+async function deleteGameGenre(gameId, genreId) {
+  await pool.query(
+    "DELETE FROM games_genres WHERE game_id = $1 AND genre_id = $2",
+    [gameId, genreId]
+  );
+}
+
+export {
+  getAllGenres,
+  insertGenre,
+  updateGenre,
+  getSingleGenreByName,
+  getSingleGenreById,
+  insertGameGenre,
+  getGameGenres,
+  deleteGameGenre,
+};

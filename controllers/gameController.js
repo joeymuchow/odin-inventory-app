@@ -17,6 +17,7 @@ import {
   getSingleGenreByName,
   getSingleGenreById,
   insertGameGenre,
+  deleteGameGenre,
 } from "../db/genreQueries.js";
 import {
   getAllPlatforms,
@@ -24,6 +25,7 @@ import {
   getSinglePlatformByName,
   getSinglePlatformById,
   insertGamePlatform,
+  deleteGamePlatforms,
 } from "../db/platformQueries.js";
 
 async function getGames(req, res) {
@@ -128,20 +130,28 @@ async function updateGameGet(req, res) {
 async function updateGamePut(req, res) {
   const { name, developer, genres, platforms } = req.body;
   const { id } = req.params;
+  const newGenres = typeof genres === "string" ? [genres] : genres;
+  const newPlatforms = typeof platforms === "string" ? [platforms] : platforms;
   const game = await getGameById(id);
   const currentDeveloper = await getSingleDeveloperByName(developer);
   // get genres for game
   const currentGenreIds = await getGameGenres(id);
-  const currentGenres = currentGenreIds.map(async (value) => {
-    const genre = await getSingleGenreById(value.genre_id);
-    return genre.name;
+  const currentGenres = await Promise.all(currentGenreIds.map(async (value) => {
+    const result = await getSingleGenreById(value.genre_id);
+    return result[0].name;
+  })).then((data) => {
+    console.log(data);
+    return data;
   });
 
   //get platforms for game
   const currentPlatformIds = await getGamePlatforms(id);
-  const currentPlatforms = currentPlatformIds.map(async (value) => {
-    const platform = await getSinglePlatformById(value.platform_id);
-    return platform.name;
+  const currentPlatforms = await Promise.all(currentPlatformIds.map(async (value) => {
+    const result = await getSinglePlatformById(value.platform_id);
+    return result[0].name;
+  })).then((data) => {
+    console.log(data);
+    return data;
   });
 
   if (name !== game.name) {
@@ -154,14 +164,68 @@ async function updateGamePut(req, res) {
   }
 
   // check for differences with genre
+  const genreDiffs = checkDifferences(currentGenres, newGenres);
+  if (genreDiffs.changed) {
+    // create and delete rows from games_genres to match new setup
+    if (genreDiffs.itemsToAdd) {
+      for (const genre of genreDiffs.itemsToAdd) {
+        const genreRow = await getSingleGenreByName(genre);
+        await insertGameGenre(id, genreRow[0].id);
+      }
+    }
 
-  // create and delete rows from games_genres to match new setup
+    if (genreDiffs.itemsToDelete) {
+      for (const genre of genreDiffs.itemsToAdd) {
+        const genreRow = await getSingleGenreByName(genre);
+        await deleteGameGenre(id, genreRow[0].id);
+      }
+    }
+  }
 
   // check for differences with platforms
+  const platformDiffs = checkDifferences(currentPlatforms, newPlatforms);
+  if (platformDiffs.changed) {
+    // create and delete rows from games_platforms to match new setup
+    if (platformDiffs.itemsToAdd) {
+      for (const platform of platformDiffs.itemsToAdd) {
+        const platformRow = await getSinglePlatformByName(platform);
+        await insertGamePlatform(id, platformRow[0].id);
+      }
+    }
 
-  // create and delete rows from games_platforms to match new setup
+    if (platformDiffs.itemsToDelete) {
+      for (const platform of platformDiffs.itemsToDelete) {
+        const platformRow = await getSinglePlatformByName(platform);
+        await deleteGamePlatforms(id, platformRow[0].id);
+      }
+    }
+  }
 
   res.redirect("/");
+}
+
+function checkDifferences(oldItems, newItems) {
+  const result = {
+    changed: false,
+    itemsToDelete: [],
+    itemsToAdd: [],
+  };
+
+  const toDelete = oldItems.filter((value) => {
+    return !newItems.includes(value);
+  });
+
+  const toAdd = newItems.filter((value) => {
+    return !oldItems.includes(value);
+  });
+
+  if (toDelete || toAdd) {
+    result.changed = true;
+    result.itemsToDelete.push(...toDelete);
+    result.itemsToAdd.push(...toAdd);
+  }
+
+  return result;
 }
 
 export { getGames, newGameGet, newGamePost, updateGameGet, updateGamePut };
