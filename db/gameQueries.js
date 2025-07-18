@@ -19,4 +19,12 @@ async function getGameById(id) {
   return rows;
 }
 
-export { getAllGames, insertGame, getGameByName, getGameById };
+async function updateGameName(name, id) {
+  await pool.query("UPDATE games SET name = $1 WHERE id = $2", [name, id]);
+}
+
+async function updateGameDeveloper(developerId, id) {
+  await pool.query("UPDATE games SET developer_id = $1 WHERE id = $2", [developerId, id]);
+}
+
+export { getAllGames, insertGame, getGameByName, getGameById, updateGameName, updateGameDeveloper };

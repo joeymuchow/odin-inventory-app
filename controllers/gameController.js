@@ -1,4 +1,11 @@
-import { getAllGames, insertGame, getGameByName, getGameById } from "../db/gameQueries.js";
+import {
+  getAllGames,
+  insertGame,
+  getGameByName,
+  getGameById,
+  updateGameName,
+  updateGameDeveloper,
+} from "../db/gameQueries.js";
 import {
   getAllDevelopers,
   getSingleDeveloperByName,
@@ -82,7 +89,9 @@ async function updateGameGet(req, res) {
   const allPlatforms = await getAllPlatforms();
 
   // find the genres the game has and set them to be checked on the form
-  const idsInCurrentGenres = new Set(currentGenres.map((gameGenres) => gameGenres.genre_id));
+  const idsInCurrentGenres = new Set(
+    currentGenres.map((gameGenres) => gameGenres.genre_id)
+  );
   const genres = allGenres.map((genre) => {
     if (idsInCurrentGenres.has(genre.id)) {
       genre.checked = true;
@@ -91,7 +100,9 @@ async function updateGameGet(req, res) {
   });
 
   // find the platforms the game has and set them to be checked on the form
-  const idsInCurrentPlatforms = new Set(currentPlatforms.map((gamePlatforms) => gamePlatforms.platform_id));
+  const idsInCurrentPlatforms = new Set(
+    currentPlatforms.map((gamePlatforms) => gamePlatforms.platform_id)
+  );
   const platforms = allPlatforms.map((platform) => {
     if (idsInCurrentPlatforms.has(platform.id)) {
       platform.checked = true;
@@ -118,6 +129,7 @@ async function updateGamePut(req, res) {
   const { name, developer, genres, platforms } = req.body;
   const { id } = req.params;
   const game = await getGameById(id);
+  const currentDeveloper = await getSingleDeveloperByName(developer);
   // get genres for game
   const currentGenreIds = await getGameGenres(id);
   const currentGenres = currentGenreIds.map(async (value) => {
@@ -131,10 +143,15 @@ async function updateGamePut(req, res) {
     const platform = await getSinglePlatformById(value.platform_id);
     return platform.name;
   });
-  
-  // check for differences with name and update if diff
 
-  // check for differences with developer and update if diff
+  if (name !== game.name) {
+    await updateGameName(name, id);
+  }
+
+  if (developer !== currentDeveloper.name) {
+    const dev = await getSingleDeveloperByName(developer);
+    await updateGameDeveloper(dev[0].id, id);
+  }
 
   // check for differences with genre
 
