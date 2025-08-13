@@ -175,7 +175,7 @@ async function updateGamePut(req, res) {
     }
 
     if (genreDiffs.itemsToDelete) {
-      for (const genre of genreDiffs.itemsToAdd) {
+      for (const genre of genreDiffs.itemsToDelete) {
         const genreRow = await getSingleGenreByName(genre);
         await deleteGameGenre(id, genreRow[0].id);
       }
