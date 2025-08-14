@@ -12,7 +12,7 @@ const genreRouter = Router();
 genreRouter.get("/", getGenres);
 genreRouter.get("/new", newGenreGet);
 genreRouter.post("/new", newGenrePost);
-genreRouter.get("/update", updateGenreGet);
+genreRouter.get("/:id/update", updateGenreGet);
 genreRouter.put("/:id/update", updateGenrePut);
 
 export default genreRouter;

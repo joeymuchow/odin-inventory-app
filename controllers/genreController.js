@@ -1,4 +1,4 @@
-import { getAllGenres, insertGenre, updateGenre } from "../db/genreQueries.js";
+import { getAllGenres, getSingleGenreById, insertGenre, updateGenre } from "../db/genreQueries.js";
 
 async function getGenres(req, res) {
   const genres = await getAllGenres();
@@ -23,11 +23,12 @@ async function newGenrePost(req, res) {
   res.redirect("/");
 }
 
-function updateGenreGet(req, res) {
-  const { name, id } = req.query;
+async function updateGenreGet(req, res) {
+  const { id } = req.params;
+  const genre = await getSingleGenreById(id);
   res.render("updateItem", {
     title: "Update Genre",
-    value: name,
+    value: genre[0].name,
     url: `/genres/${id}/update`,
   });
 }

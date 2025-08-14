@@ -1,5 +1,6 @@
 import {
   getAllPlatforms,
+  getSinglePlatformById,
   insertPlatform,
   updatePlatform,
 } from "../db/platformQueries.js";
@@ -27,11 +28,12 @@ async function newPlatformPost(req, res) {
   res.redirect("/");
 }
 
-function updatePlatformGet(req, res) {
-  const { name, id } = req.query;
+async function updatePlatformGet(req, res) {
+  const { id } = req.params;
+  const platform = await getSinglePlatformById(id);
   res.render("updateItem", {
     title: "Update Platform",
-    value: name,
+    value: platform[0].name,
     url: `/platforms/${id}/update`,
   });
 }

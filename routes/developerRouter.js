@@ -12,7 +12,7 @@ const developerRouter = Router();
 developerRouter.get("/", getDevelopers);
 developerRouter.get("/new", newDeveloperGet);
 developerRouter.post("/new", newDeveloperPost);
-developerRouter.get("/update", updateDeveloperGet);
+developerRouter.get("/:id/update", updateDeveloperGet);
 developerRouter.put("/:id/update", updateDeveloperPut);
 
 export default developerRouter;

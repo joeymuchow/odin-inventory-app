@@ -1,5 +1,6 @@
 import {
   getAllDevelopers,
+  getSingleDeveloperById,
   insertDeveloper,
   updateDeveloper,
 } from "../db/developerQueries.js";
@@ -27,11 +28,12 @@ async function newDeveloperPost(req, res) {
   res.redirect("/");
 }
 
-function updateDeveloperGet(req, res) {
-  const { name, id } = req.query;
+async function updateDeveloperGet(req, res) {
+  const { id } = req.params;
+  const developer = await getSingleDeveloperById(id);
   res.render("updateItem", {
     title: "Update Developer",
-    value: name,
+    value: developer[0].name,
     url: `/developers/${id}/update`,
   });
 }

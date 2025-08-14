@@ -27,6 +27,7 @@ import {
   insertGamePlatform,
   deleteGamePlatforms,
 } from "../db/platformQueries.js";
+import { validationResult } from "express-validator";
 
 async function getGames(req, res) {
   const games = await getAllGames();
@@ -49,11 +50,30 @@ async function newGameGet(req, res) {
     developers: developers,
     genres: genres,
     platforms: platforms,
+    errors: null,
   });
 }
 
 async function newGamePost(req, res) {
   const { name, developer, genres, platforms } = req.body;
+  const errorFormatter = ({ msg }) => {
+    return msg;
+  };
+  const errors = validationResult(req).formatWith(errorFormatter);
+  if (!errors.isEmpty()) {
+    const developers = await getAllDevelopers();
+    const genres = await getAllGenres();
+    const platforms = await getAllPlatforms();
+
+    return res.status(400).render("newGame", {
+      title: "New Game",
+      url: "/games/new",
+      developers,
+      genres,
+      platforms,
+      errors: errors.array(),
+    });
+  }
 
   // get developer id from developer name
   const dev = await getSingleDeveloperByName(developer);
@@ -79,10 +99,22 @@ async function newGamePost(req, res) {
   res.redirect("/");
 }
 
-async function updateGameGet(req, res) {
-  const { name, id } = req.query;
+function setGameCheckedItems(currentItems, allItems, field) {
+  const idsInCurrentItems = new Set(
+    currentItems.map((gameItems) => gameItems[field])
+  );
+  return allItems.map((item) => {
+    if (idsInCurrentItems.has(item.id)) {
+      item.checked = true;
+    }
+    return item;
+  });
+}
 
-  const game = await getGameByName(name);
+async function updateGameGet(req, res) {
+  const { id } = req.params;
+
+  const game = await getGameById(id);
   const currentDeveloper = await getSingleDeveloperById(game[0].developer_id);
   const developers = await getAllDevelopers();
   const currentGenres = await getGameGenres(game[0].id);
@@ -91,48 +123,56 @@ async function updateGameGet(req, res) {
   const allPlatforms = await getAllPlatforms();
 
   // find the genres the game has and set them to be checked on the form
-  const idsInCurrentGenres = new Set(
-    currentGenres.map((gameGenres) => gameGenres.genre_id)
-  );
-  const genres = allGenres.map((genre) => {
-    if (idsInCurrentGenres.has(genre.id)) {
-      genre.checked = true;
-    }
-    return genre;
-  });
+  const genres = setGameCheckedItems(currentGenres, allGenres, "genre_id");
 
   // find the platforms the game has and set them to be checked on the form
-  const idsInCurrentPlatforms = new Set(
-    currentPlatforms.map((gamePlatforms) => gamePlatforms.platform_id)
-  );
-  const platforms = allPlatforms.map((platform) => {
-    if (idsInCurrentPlatforms.has(platform.id)) {
-      platform.checked = true;
-    }
-    return platform;
-  });
+  const platforms = setGameCheckedItems(currentPlatforms, allPlatforms, "platform_id");
 
   res.render("updateGame", {
     title: "Update Game",
-    name,
+    name: game[0].name,
     url: `/games/${id}/update`,
     currentDeveloper: currentDeveloper[0].name,
     developers,
     genres,
     platforms,
+    errors: null,
   });
 }
 
-// TODO
 // updateGamePut
-// check if anything is different from what already exists? this could be a lot of checks
 // update any changes and delete rows in games_genres or games_platforms that were unchecked
 async function updateGamePut(req, res) {
   const { name, developer, genres, platforms } = req.body;
   const { id } = req.params;
+  // get what is currently in db for game
+  const game = await getGameById(id);
+  const errorFormatter = ({ msg }) => {
+    return msg;
+  };
+  const errors = validationResult(req).formatWith(errorFormatter);
+  if (!errors.isEmpty()) {
+    const developers = await getAllDevelopers();
+    const currentGenres = await getGameGenres(game[0].id);
+    const allGenres = await getAllGenres();
+    const currentPlatforms = await getGamePlatforms(game[0].id);
+    const allPlatforms = await getAllPlatforms();
+    const genres = setGameCheckedItems(currentGenres, allGenres, "genre_id");
+    const platforms = setGameCheckedItems(currentPlatforms, allPlatforms, "platform_id");
+
+    return res.status(400).render("updateGame", {
+      title: "Update Game",
+      name: game[0].name,
+      url: `/games/${id}/update`,
+      currentDeveloper: developer,
+      developers,
+      genres,
+      platforms,
+      errors: errors.array(),
+    });
+  }
   const newGenres = typeof genres === "string" ? [genres] : genres;
   const newPlatforms = typeof platforms === "string" ? [platforms] : platforms;
-  const game = await getGameById(id);
   const currentDeveloper = await getSingleDeveloperByName(developer);
   // get genres for game
   const currentGenreIds = await getGameGenres(id);
@@ -140,7 +180,6 @@ async function updateGamePut(req, res) {
     const result = await getSingleGenreById(value.genre_id);
     return result[0].name;
   })).then((data) => {
-    console.log(data);
     return data;
   });
 
@@ -150,7 +189,6 @@ async function updateGamePut(req, res) {
     const result = await getSinglePlatformById(value.platform_id);
     return result[0].name;
   })).then((data) => {
-    console.log(data);
     return data;
   });
 

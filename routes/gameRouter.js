@@ -1,16 +1,37 @@
 import { Router } from "express";
-import { getGames, newGameGet, newGamePost, updateGameGet, updateGamePut } from "../controllers/gameController.js";
+import { body, oneOf } from "express-validator";
+import {
+  getGames,
+  newGameGet,
+  newGamePost,
+  updateGameGet,
+  updateGamePut,
+} from "../controllers/gameController.js";
 
 const gameRouter = Router();
-// TODO: add middleware to validate the form submissions for /new post and /:id/update put
+const validateGenresAndPlatforms = [
+  body("genres")
+    .notEmpty()
+    .withMessage("At least one genre must be selected."),
+  body("platforms")
+    .notEmpty()
+    .withMessage("At least one platform must be selected."),
+];
 
 gameRouter.get("/", getGames);
 gameRouter.get("/new", newGameGet);
-gameRouter.post("/new", newGamePost);
+gameRouter.post(
+  "/new",
+  validateGenresAndPlatforms,
+  newGamePost
+);
 
-// TODO: update game routes
-// the update shouldn't be too crazy? maybe? although updating a games developer, genre, or platform might be interesting
-gameRouter.get("/update", updateGameGet);
-gameRouter.put("/:id/update", updateGamePut);
+// update game routes
+gameRouter.get("/:id/update", updateGameGet);
+gameRouter.put(
+  "/:id/update",
+  validateGenresAndPlatforms,
+  updateGamePut
+);
 
 export default gameRouter;
