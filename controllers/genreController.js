@@ -1,4 +1,11 @@
-import { getAllGenres, getSingleGenreById, insertGenre, updateGenre } from "../db/genreQueries.js";
+import {
+  getAllGenres,
+  getSingleGenreById,
+  insertGenre,
+  updateGenre,
+  deleteGameGenreByGenre,
+  deleteGenre,
+} from "../db/genreQueries.js";
 
 async function getGenres(req, res) {
   const genres = await getAllGenres();
@@ -40,4 +47,18 @@ async function updateGenrePut(req, res) {
   res.redirect("/");
 }
 
-export { getGenres, newGenreGet, newGenrePost, updateGenreGet, updateGenrePut };
+async function deleteGenreGet(req, res) {
+  const { id } = req.params;
+  await deleteGameGenreByGenre(id);
+  await deleteGenre(id);
+  res.redirect("/");
+}
+
+export {
+  getGenres,
+  newGenreGet,
+  newGenrePost,
+  updateGenreGet,
+  updateGenrePut,
+  deleteGenreGet,
+};
