@@ -6,6 +6,7 @@ import {
   newGamePost,
   updateGameGet,
   updateGamePut,
+  deleteGameGet,
 } from "../controllers/gameController.js";
 
 const gameRouter = Router();
@@ -33,5 +34,8 @@ gameRouter.put(
   validateGenresAndPlatforms,
   updateGamePut
 );
+
+// delete game routes
+gameRouter.get("/:id/delete", deleteGameGet);
 
 export default gameRouter;

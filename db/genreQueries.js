@@ -47,6 +47,13 @@ async function deleteGameGenre(gameId, genreId) {
   );
 }
 
+async function deleteGameGenreByGame(gameId) {
+  await pool.query(
+    "DELETE FROM games_genres WHERE game_id = $1",
+    [gameId]
+  );
+}
+
 export {
   getAllGenres,
   insertGenre,
@@ -56,4 +63,5 @@ export {
   insertGameGenre,
   getGameGenres,
   deleteGameGenre,
+  deleteGameGenreByGame,
 };

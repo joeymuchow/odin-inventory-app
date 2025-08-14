@@ -49,6 +49,13 @@ async function deleteGamePlatforms(gameId, platformId) {
   );
 }
 
+async function deleteGamePlatformsByGame(gameId) {
+  await pool.query(
+    "DELETE FROM games_platforms WHERE game_id = $1",
+    [gameId]
+  );
+}
+
 export {
   getAllPlatforms,
   insertPlatform,
@@ -58,4 +65,5 @@ export {
   insertGamePlatform,
   getGamePlatforms,
   deleteGamePlatforms,
+  deleteGamePlatformsByGame,
 };

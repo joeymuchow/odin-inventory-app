@@ -27,4 +27,8 @@ async function updateGameDeveloper(developerId, id) {
   await pool.query("UPDATE games SET developer_id = $1 WHERE id = $2", [developerId, id]);
 }
 
-export { getAllGames, insertGame, getGameByName, getGameById, updateGameName, updateGameDeveloper };
+async function deleteGame(id) {
+  await pool.query("DELETE FROM games WHERE id = $1", [id]);
+}
+
+export { getAllGames, insertGame, getGameByName, getGameById, updateGameName, updateGameDeveloper, deleteGame };

@@ -10,7 +10,7 @@
   <a href="/">Home</a>
   <ul>
     <% for (let i = 0; i < items.length; i++) { %>
-      <li><%= items[i].name %> <a href="<%= category %>/<%= items[i].id %>/update">Update</a></li>
+      <li><%= items[i].name %> <a href="<%= category %>/<%= items[i].id %>/update">Update</a> <a href="<%= category %>/<%= items[i].id %>/delete">Delete</a></li>
     <% } %>
   </ul>
 </body>

@@ -5,6 +5,7 @@ import {
   getGameById,
   updateGameName,
   updateGameDeveloper,
+  deleteGame,
 } from "../db/gameQueries.js";
 import {
   getAllDevelopers,
@@ -18,6 +19,7 @@ import {
   getSingleGenreById,
   insertGameGenre,
   deleteGameGenre,
+  deleteGameGenreByGame,
 } from "../db/genreQueries.js";
 import {
   getAllPlatforms,
@@ -26,6 +28,7 @@ import {
   getSinglePlatformById,
   insertGamePlatform,
   deleteGamePlatforms,
+  deleteGamePlatformsByGame,
 } from "../db/platformQueries.js";
 import { validationResult } from "express-validator";
 
@@ -266,4 +269,17 @@ function checkDifferences(oldItems, newItems) {
   return result;
 }
 
-export { getGames, newGameGet, newGamePost, updateGameGet, updateGamePut };
+async function deleteGameGet(req, res) {
+  const { id } = req.params;
+
+  // delete entries from games_genres where game_id = id
+  await deleteGameGenreByGame(id);
+  // delete entries from games_platforms where game_id = id
+  await deleteGamePlatformsByGame(id);
+  // delete game from games table
+  await deleteGame(id);
+
+  res.redirect("/");
+}
+
+export { getGames, newGameGet, newGamePost, updateGameGet, updateGamePut, deleteGameGet };
