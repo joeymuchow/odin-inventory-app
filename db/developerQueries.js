@@ -14,13 +14,29 @@ async function updateDeveloper(name, id) {
 }
 
 async function getSingleDeveloperByName(name) {
-  const { rows } = await pool.query("SELECT * FROM developers WHERE name = $1", [name]);
+  const { rows } = await pool.query(
+    "SELECT * FROM developers WHERE name = $1",
+    [name]
+  );
   return rows;
 }
 
 async function getSingleDeveloperById(id) {
-  const { rows } = await pool.query("SELECT * FROM developers WHERE id = $1", [id]);
+  const { rows } = await pool.query("SELECT * FROM developers WHERE id = $1", [
+    id,
+  ]);
   return rows;
 }
 
-export { getAllDevelopers, insertDeveloper, updateDeveloper, getSingleDeveloperByName, getSingleDeveloperById };
+async function deleteDeveloper(id) {
+  await pool.query("DELETE FROM developers WHERE id = $1", [id]);
+}
+
+export {
+  getAllDevelopers,
+  insertDeveloper,
+  updateDeveloper,
+  getSingleDeveloperByName,
+  getSingleDeveloperById,
+  deleteDeveloper,
+};

@@ -3,6 +3,7 @@ import {
   getSingleDeveloperById,
   insertDeveloper,
   updateDeveloper,
+  deleteDeveloper,
 } from "../db/developerQueries.js";
 
 async function getDevelopers(req, res) {
@@ -45,10 +46,17 @@ async function updateDeveloperPut(req, res) {
   res.redirect("/");
 }
 
+async function deleteDeveloperGet(req, res) {
+  const { id } = req.params;
+  await deleteDeveloper(id);
+  res.redirect("/");
+}
+
 export {
   getDevelopers,
   newDeveloperGet,
   newDeveloperPost,
   updateDeveloperGet,
   updateDeveloperPut,
+  deleteDeveloperGet,
 };
