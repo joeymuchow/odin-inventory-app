@@ -3,6 +3,8 @@ import {
   getSinglePlatformById,
   insertPlatform,
   updatePlatform,
+  deleteGamePlatformsByPlatform,
+  deletePlatform,
 } from "../db/platformQueries.js";
 
 async function getPlatforms(req, res) {
@@ -45,10 +47,18 @@ async function updatePlatformPut(req, res) {
   res.redirect("/");
 }
 
+async function deletePlatformGet(req, res) {
+  const { id } = req.params;
+  await deleteGamePlatformsByPlatform(id);
+  await deletePlatform(id);
+  res.redirect("/");
+}
+
 export {
   getPlatforms,
   newPlatformGet,
   newPlatformPost,
   updatePlatformGet,
   updatePlatformPut,
+  deletePlatformGet,
 };
